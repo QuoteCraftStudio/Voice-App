@@ -1,97 +1,158 @@
-<!DOCTYPE html><!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Modern Voice App</title> <style> :root { --bg-color: #f0f2f5; --card-bg: #c5a47e; --text-color: #333; --accent-color: #007bff; --button-radius: 25px; --border-radius: 12px; --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Voice Reader</title>
+<style>
+:root{color-scheme:light;--bg:#edf2f0;--surface:#ffffff;--text:#202e29;--muted:#5d6f65;--border:#c9d5ce;--soft:#f3f7f4;--accent:#345f52;--button-text:#ffffff;--highlight:#ffe19b;--highlight-text:#29251f}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#101b17;--surface:#1a2922;--text:#edf4ef;--muted:#b6c8bd;--border:#43584b;--soft:#14221b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:17px system-ui,sans-serif;transition:background .2s,color .2s}main{max-width:940px;margin:36px auto;padding:34px;background:var(--surface);border:1px solid var(--border);border-radius:24px;box-shadow:0 18px 55px #00000012}h1{font-size:clamp(30px,5vw,42px);letter-spacing:-1.3px;margin:8px 0 10px}h2{font-size:18px;margin:0 0 8px}p{line-height:1.6}.note{color:var(--muted);font-size:14px}.eyebrow{font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:750;color:var(--muted)}label{display:block;font-weight:600;margin:18px 0 8px;font-size:15px}textarea,select,input[type=file]{width:100%;font:inherit;padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--soft);color:var(--text)}textarea{min-height:230px;resize:vertical;line-height:1.6}.controls{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0}button{font:inherit;font-weight:650;border:1px solid transparent;border-radius:12px;padding:12px 22px;background:var(--accent);color:var(--button-text);cursor:pointer;transition:transform .15s,filter .15s}button:hover{filter:brightness(1.08);transform:translateY(-1px)}button:disabled{opacity:.45;cursor:default;transform:none}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}#text{position:relative;white-space:pre-wrap;line-height:1.8;max-height:350px;overflow:auto;padding:18px;background:var(--soft);border:1px solid var(--border);border-radius:12px}#text:empty:before{content:attr(data-placeholder);color:var(--muted)}mark{background:var(--highlight);color:var(--highlight-text);border-radius:3px}#status{min-height:26px;padding:12px 16px;background:var(--soft);border-radius:10px;font-size:15px}input[type=range]{width:100%;accent-color:var(--accent)}details{background:var(--soft);border:1px solid var(--border);padding:16px 18px;border-radius:14px;margin:24px 0}summary{font-weight:650;cursor:pointer}.appearance-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:18px}.appearance-grid label{margin-top:16px}input[type=color]{width:100%;height:47px;border:1px solid var(--border);border-radius:10px;background:var(--surface);padding:5px;cursor:pointer}.presets{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}.presets button,.secondary{background:var(--surface);color:var(--text);border-color:var(--border);font-size:14px;padding:9px 15px}.settings-row{display:grid;grid-template-columns:2fr 1fr;gap:24px}.footer{border-top:1px solid var(--border);padding-top:18px;margin-top:26px}@media(max-width:600px){main{margin:12px;padding:22px;border-radius:18px}.appearance-grid,.settings-row{grid-template-columns:1fr}.appearance-grid{gap:0}.controls button{flex:1}h1{letter-spacing:-.8px}}
 
-body { font-family: var(--font-family); background-color: var(--bg-color); color: var(--text-color); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+.search-row{display:flex;gap:10px;flex-wrap:wrap}.search-row input{flex:1;min-width:160px;font:inherit;border:1px solid var(--border);border-radius:10px;padding:12px;background:var(--soft);color:var(--text)}progress{width:100%;height:12px;accent-color:var(--accent)}.progress-heading{display:flex;justify-content:space-between;gap:12px;font-size:14px;color:var(--muted);margin:12px 0 6px}.search-result{font-size:14px;color:var(--muted);min-height:22px}
+.donation-link{display:inline-block;text-decoration:none;font-weight:650;border-radius:12px;padding:12px 22px;background:var(--accent);color:var(--button-text)}.donation-link:hover{filter:brightness(1.08)}.donation-link:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.library-panel{border:1px solid var(--border);border-radius:14px;padding:18px;margin:24px 0;background:var(--soft)}.library-panel input[type=text],.library-panel input[type=search]{width:100%;font:inherit;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text)}.library-list{list-style:none;padding:0;margin:16px 0 0;max-height:390px;overflow:auto}.library-item{padding:14px 0;border-top:1px solid var(--border)}.library-item strong{overflow-wrap:anywhere}.library-item .controls{margin:10px 0 0}.library-meta{font-size:13px;color:var(--muted);margin:5px 0}.save-choice{display:flex;gap:10px;align-items:center;font-weight:400}.save-choice input{width:18px;height:18px;accent-color:var(--accent)}
+#text{min-height:280px;max-height:65vh;overflow-wrap:anywhere;overflow-anchor:none;scroll-behavior:auto;cursor:pointer}#text[contenteditable="true"]{cursor:text}#text:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+</style></head><body><main>
+<div class="eyebrow">Your words. Your pace.</div><h1>Voice Reader</h1><p>Open a document or paste text, choose a voice, and listen.</p>
+<details><summary>Personalize your reader</summary>
+<div class="appearance-grid"><div><label for="theme">Theme</label><select id="theme"><option value="system">Match my device</option><option value="light">Light</option><option value="dark">Dark</option></select></div><div><label for="accent">Button colour</label><input id="accent" type="color" value="#345f52"></div><div><label for="highlightColour">Highlight colour</label><input id="highlightColour" type="color" value="#ffe19b"></div></div>
+<div class="presets" aria-label="Colour presets"><button type="button" data-colour="#345f52">Forest</button><button type="button" data-colour="#365fc2">Ocean</button><button type="button" data-colour="#7652ac">Lavender</button><button type="button" data-colour="#a04455">Rose</button></div>
+<button id="resetAppearance" class="secondary" type="button">Reset appearance</button><p class="note">Appearance is saved on this browser. Documents are saved only when automatic saving is enabled or you press Save current text.</p>
+</details><label for="file">Open a document</label><input id="file" type="file" accept=".pdf,.docx,.txt,.md,.csv,.html,.htm">
+<p class="note">Supports PDFs with selectable text, Word .docx, TXT, Markdown, CSV, and HTML. For older .doc files, save as .docx first. Scanned PDFs and photos need text recognition and are not supported in this version.</p>
+<section class="library-panel" aria-labelledby="libraryHeading">
+<h2 id="libraryHeading">My books &amp; publications</h2>
+<p class="note">Open a downloaded file above to add it here automatically. Saved text and original files stay in this browser on this device. Clearing browser data removes them; use Download to keep a separate copy. This library does not sync between devices.</p>
+<label class="save-choice"><input type="checkbox" id="autoSave" checked> Automatically save documents I open</label>
+<label for="bookTitle">Title for pasted text or an edited document</label><input id="bookTitle" type="text" maxlength="200" placeholder="Name this book or publication">
+<div class="controls"><button id="saveBook" type="button">Save current text</button></div>
+<label for="librarySearch">Search saved publications</label><input id="librarySearch" type="search" placeholder="Search titles">
+<p id="libraryStatus" class="note" role="status" aria-live="polite">Opening your library…</p><ul id="libraryList" class="library-list"></ul>
+</section>
+<div class="controls"><button id="editText" type="button" class="secondary" aria-pressed="false">Edit or paste text</button></div><p id="readerHelp" class="note">Tap any word below to read from there. Use Bookmark this position to save your place.</p><label id="readerLabel">Reader</label><div id="text" role="textbox" aria-labelledby="readerLabel" aria-multiline="true" contenteditable="false" tabindex="0" data-placeholder="Open a document, or choose Edit or paste text."></div>
+<div class="settings-row"><div><label for="voice">Voice</label><select id="voice"><option value="">Device default</option></select>
+</div><div><label for="speed">Reading speed: <output id="speedValue">1.0×</output></label><input id="speed" type="range" min="0.5" max="2" step="0.1" value="1"></div></div>
+<div class="controls"><button id="read">Read aloud</button><button id="pause" disabled>Pause</button><button id="resume" disabled>Resume</button><button id="stop" disabled>Stop</button></div>
+<div class="controls"><button id="saveBookmark" type="button" class="secondary">Bookmark this position</button><button id="continueBookmark" type="button" class="secondary" disabled>Read from bookmark</button></div><p id="bookmarkStatus" class="note" role="status" aria-live="polite">No bookmark yet. While reading, bookmark your position, or tap a word and bookmark it. Pause and Stop also save your place in a saved publication.</p>
+<label for="searchText">Find in this document</label><div class="search-row"><input id="searchText" type="search" placeholder="Search for a word or phrase"><button id="findPrevious" type="button" class="secondary">Previous</button><button id="findNext" type="button" class="secondary">Next</button></div><p id="searchResult" class="search-result" role="status" aria-live="polite"></p>
+<div class="progress-heading"><span>Reading progress</span><span id="progressValue">0%</span></div><progress id="readingProgress" value="0" max="100" aria-label="Reading progress"></progress>
+<label class="save-choice"><input type="checkbox" id="followAlong" checked> Highlight and follow along while reading</label><p class="note">The highlight follows each section and, with supported voices, each spoken word. Change the highlight colour under Personalize your reader.</p>
+<p id="status" role="status" aria-live="polite">Ready.</p>
+<p class="note footer">Free to use; no API key or ChatGPT subscription required. Available voices and their quality depend on your device. Some voices need internet. PDF and Word readers load from the internet; documents are processed in this browser. Highlights follow each reading section; word highlights depend on voice support. Keep this page open while listening.</p>
+<div class="controls"><a class="donation-link" href="https://www.paypal.me/msimmonite" target="_blank" rel="noopener noreferrer">Donate with PayPal</a></div>
+</main><script>
+'use strict';
+const $=id=>document.getElementById(id), synth=window.speechSynthesis;
+let readerText='',editing=false;
+Object.defineProperty($('text'),'value',{get:()=>readerText,set:value=>{readerText=String(value);$('text').textContent=readerText;}});
+function setEditing(enabled){if(enabled)stopReading('Edit or paste your text, then press Done editing.');editing=enabled;$('text').contentEditable=enabled?'true':'false';$('editText').textContent=enabled?'Done editing':'Edit or paste text';$('editText').setAttribute('aria-pressed',String(enabled));$('readerHelp').textContent=enabled?'Edit or paste here. Choose Done editing to return to tap-to-read.':'Tap any word below to read from there. Use Bookmark this position to save your place.';if(enabled){$('text').textContent=readerText;$('text').focus();}}
+$('editText').onclick=()=>{if(editing){readerText=$('text').innerText.replace(/\r\n/g,'\n');}setEditing(!editing);};
+function selectionOffset(){const selection=window.getSelection();if(!selection||!selection.rangeCount)return currentOffset;const range=selection.getRangeAt(0);if(!$('text').contains(range.startContainer))return currentOffset;const before=document.createRange();before.selectNodeContents($('text'));before.setEnd(range.startContainer,range.startOffset);return before.toString().length;}
+function wordStartAt(offset,text=readerText){offset=Math.max(0,Math.min(offset,text.length));if(offset===text.length&&offset>0)offset--;while(offset<text.length&&/\s/.test(text[offset]))offset++;while(offset>0&&offset<text.length&&!/\s/.test(text[offset-1]))offset--;return offset;}
+function tappedOffset(event){let node,offset;const caret=document.caretPositionFromPoint?.(event.clientX,event.clientY);if(caret){node=caret.offsetNode;offset=caret.offset;}else{const range=document.caretRangeFromPoint?.(event.clientX,event.clientY);node=range?.startContainer;offset=range?.startOffset;}if(!node||!$('text').contains(node))return null;const before=document.createRange();before.selectNodeContents($('text'));before.setEnd(node,offset);return wordStartAt(before.toString().length);}
+$('text').onclick=event=>{if(editing||loading||!readerText.trim())return;const offset=tappedOffset(event);if(offset!==null){currentOffset=offset;startReading(offset);}};
+$('text').onkeydown=event=>{if(!editing&&(event.key==='Enter'||event.key===' ')){event.preventDefault();startReading(currentOffset);}};
+$('text').onpaste=event=>{if(!editing)return;event.preventDefault();const text=event.clipboardData.getData('text/plain'),selection=window.getSelection();if(!selection?.rangeCount)return;const range=selection.getRangeAt(0);if(!$('text').contains(range.commonAncestorContainer))return;range.deleteContents();const node=document.createTextNode(text);range.insertNode(node);range.setStartAfter(node);range.collapse(true);selection.removeAllRanges();selection.addRange(range);$('text').dispatchEvent(new Event('input',{bubbles:true}));};
 
-.container { background-color: var(--card-bg); padding: 2.5rem; border-radius: var(--border-radius); box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 550px; text-align: center; }
 
-h1 { color: white; margin-bottom: 2rem; font-weight: 300; }
+const appearanceKey='voice-reader-appearance-v1', themeMedia=window.matchMedia('(prefers-color-scheme: dark)');
+let appearance={theme:'system',accent:'#345f52',highlight:'#ffe19b'};
+function validColour(value){return /^#[0-9a-f]{6}$/i.test(value);}
+function readableInk(hex){const channels=hex.slice(1).match(/../g).map(v=>parseInt(v,16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);const luminance=.2126*channels[0]+.7152*channels[1]+.0722*channels[2];return (luminance+.05)/.05 >= 1.05/(luminance+.05)?'#000000':'#ffffff';}
+function applyAppearance(){const root=document.documentElement;root.dataset.theme=appearance.theme==='system'?(themeMedia.matches?'dark':'light'):appearance.theme;root.style.setProperty('--accent',appearance.accent);root.style.setProperty('--button-text',readableInk(appearance.accent));root.style.setProperty('--highlight',appearance.highlight);root.style.setProperty('--highlight-text',readableInk(appearance.highlight));$('theme').value=appearance.theme;$('accent').value=appearance.accent;$('highlightColour').value=appearance.highlight;}
+function saveAppearance(){applyAppearance();try{localStorage.setItem(appearanceKey,JSON.stringify(appearance));}catch{}}
+try{const saved=JSON.parse(localStorage.getItem(appearanceKey)||'null');if(saved){if(['light','dark','system'].includes(saved.theme))appearance.theme=saved.theme;if(validColour(saved.accent))appearance.accent=saved.accent;if(validColour(saved.highlight))appearance.highlight=saved.highlight;}}catch{}
+$('theme').onchange=()=>{appearance.theme=$('theme').value;saveAppearance();};$('accent').oninput=()=>{appearance.accent=$('accent').value;saveAppearance();};$('highlightColour').oninput=()=>{appearance.highlight=$('highlightColour').value;saveAppearance();};document.querySelectorAll('[data-colour]').forEach(button=>button.onclick=()=>{appearance.accent=button.dataset.colour;saveAppearance();});$('resetAppearance').onclick=()=>{appearance={theme:'system',accent:'#345f52',highlight:'#ffe19b'};saveAppearance();};themeMedia.addEventListener('change',applyAppearance);applyAppearance();
 
-textarea { width: 100%; height: 180px; padding: 15px; border-radius: var(--border-radius); border: none; resize: none; box-sizing: border-box; font-family: var(--font-family); font-size: 16px; margin-bottom: 1.5rem; background-color: rgba(255, 255, 255, 0.9); outline: none; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); }
+let currentBookId=null,currentOffset=0,bookmarkOffset=null,currentPageStarts=[];
+let voices=[],parts=[],position=0,generation=0,active=false,paused=false,currentUtterance=null,loading=false;
+function status(message){$('status').textContent=message;}
+function updateProgress(value){const percent=Math.max(0,Math.min(100,value));$('readingProgress').value=percent;$('progressValue').textContent=Math.round(percent)+'%';}
+function buttons(){ $('read').disabled=loading||!synth;$('saveBook').disabled=loading;$('saveBookmark').disabled=loading;$('continueBookmark').disabled=loading||bookmarkOffset===null; $('pause').disabled=!active||paused; $('resume').disabled=!active||!paused; $('stop').disabled=!active; }
+function stopReading(message='Stopped.'){generation++;if(synth)synth.cancel();active=false;paused=false;currentUtterance=null;buttons();if(message)status(message);}
+function populateVoices(){const selected=$('voice').value;voices=synth?synth.getVoices():[];$('voice').replaceChildren(new Option('Device default',''));voices.forEach((v,i)=>$('voice').append(new Option(`${v.name} (${v.lang})${v.default?' — DEFAULT':''}`,String(i))));if([...$('voice').options].some(o=>o.value===selected))$('voice').value=selected;}
+function splitText(text){const result=[];let offset=0;while(offset<text.length){let end=Math.min(offset+220,text.length);if(end<text.length){const segment=text.slice(offset,end);const punctuation=Math.max(segment.lastIndexOf('. '),segment.lastIndexOf('? '),segment.lastIndexOf('! '),segment.lastIndexOf('\n'));const space=segment.lastIndexOf(' ');const cut=punctuation>40?punctuation+1:space>40?space+1:segment.length;end=offset+cut;}const value=text.slice(offset,end);if(value.trim())result.push({start:offset,text:value});offset=end;}return result;}
+function keepHighlightVisible(){
+ const reader=$('text'),mark=reader.querySelector('mark');if(!mark||editing)return;
+ const lines=Array.from(mark.getClientRects()).filter(rect=>rect.height>0&&rect.width>0);if(!lines.length||!reader.clientHeight)return;
+ const box=reader.getBoundingClientRect(),padding=Math.min(18,reader.clientHeight/4),top=box.top+reader.clientTop+padding,bottom=box.top+reader.clientTop+reader.clientHeight-padding;
+ const first=lines[0],last=lines[lines.length-1];let change=0;
+ // A section can span more than one screen. Keep its opening line visible until word tracking takes over.
+ if(last.bottom-first.top>bottom-top){if(first.top<top||first.bottom>bottom)change=first.top-top;}
+ else if(first.top<top)change=first.top-top;
+ else if(last.bottom>bottom)change=last.bottom-bottom;
+ if(change)reader.scrollTop=Math.max(0,Math.min(reader.scrollHeight-reader.clientHeight,reader.scrollTop+change));
+}
+function showHighlight(start,length){if(editing)return;const reader=$('text'),text=reader.value;if(active&&!$('followAlong').checked){reader.textContent=text;return;}const scroll=reader.scrollTop,mark=document.createElement('mark');mark.textContent=text.slice(start,start+length);reader.replaceChildren(document.createTextNode(text.slice(0,start)),mark,document.createTextNode(text.slice(start+length)));reader.scrollTop=scroll;keepHighlightVisible();}
+if(window.ResizeObserver)new ResizeObserver(keepHighlightVisible).observe($('text'));
+window.addEventListener('resize',keepHighlightVisible);
+function speakNext(token){if(token!==generation||!active)return;if(position>=parts.length){active=false;currentUtterance=null;buttons();updateProgress(100);status('Finished reading.');return;}const part=parts[position],u=new SpeechSynthesisUtterance(part.text);currentUtterance=u;const selected=$('voice').value;if(selected!==''&&voices[Number(selected)]){u.voice=voices[Number(selected)];u.lang=u.voice.lang;}u.rate=Number($('speed').value);u.onstart=()=>{if(token===generation){currentOffset=part.start;updateProgress(currentOffset/Math.max(1,$('text').value.length)*100);showHighlight(part.start,part.text.length);status(`Reading section ${position+1} of ${parts.length}.`);}};u.onboundary=e=>{if(token!==generation||e.name!=='word')return;const remaining=part.text.slice(e.charIndex);const length=e.charLength||remaining.match(/^\S+/)?.[0].length||1;currentOffset=part.start+e.charIndex;showHighlight(currentOffset,length);};u.onend=()=>{if(token===generation){currentOffset=part.start+part.text.length;position++;speakNext(token);}};u.onerror=e=>{if(token!==generation)return;stopReading(`Reading stopped: ${e.error}. Try another voice or press Read aloud again.`);};synth.speak(u);}
+function startReading(offset=0){if(loading||!synth)return;if(editing){readerText=$('text').innerText.replace(/\r\n/g,'\n');setEditing(false);}stopReading('');const text=$('text').value;if(!text.trim()){status('Please open a document or paste text first.');return;}currentOffset=Math.max(0,Math.min(offset,text.length));parts=splitText(text.slice(currentOffset)).map(part=>({...part,start:part.start+currentOffset}));position=0;updateProgress(currentOffset/Math.max(1,text.length)*100);active=true;buttons();speakNext(generation);}
+$('read').onclick=()=>startReading(0);
+$('pause').onclick=()=>{synth.pause();paused=true;buttons();status('Paused.');if(currentBookId)saveBookmarkAt(currentOffset);};$('resume').onclick=()=>{synth.resume();paused=false;buttons();status('Resuming.');};$('stop').onclick=()=>{if(currentBookId)saveBookmarkAt(currentOffset);stopReading();};
+$('text').oninput=()=>{readerText=$('text').innerText.replace(/\r\n/g,'\n');currentOffset=0;bookmarkOffset=null;currentPageStarts=[];updateBookmarkLabel();stopReading('Text updated. Choose Done editing to tap and read.');updateProgress(0);refreshSearch();};$('speed').oninput=()=>{$('speedValue').textContent=Number($('speed').value).toFixed(1)+'×';};
+let matches=[],matchIndex=-1;
+function refreshSearch(){matches=[];matchIndex=-1;const query=$('searchText').value.toLocaleLowerCase(),text=$('text').value.toLocaleLowerCase();if(query){let from=0;while(from<text.length){const index=text.indexOf(query,from);if(index<0)break;matches.push(index);from=index+query.length;}}$('searchResult').textContent=query?(matches.length?`${matches.length} matches. Press Next to locate one.`:'No matches found.') :'';}
+function findMatch(direction){if(!matches.length){refreshSearch();if(!matches.length)return;}matchIndex=(matchIndex+direction+matches.length)%matches.length;showHighlight(matches[matchIndex],$('searchText').value.length);$('searchResult').textContent=`Match ${matchIndex+1} of ${matches.length}.`;}
+$('searchText').oninput=refreshSearch;$('searchText').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();findMatch(e.shiftKey?-1:1);}};$('findNext').onclick=()=>findMatch(1);$('findPrevious').onclick=()=>findMatch(-1);
+let pdfLibrary,mammothPromise;
+async function getPdfLibrary(){if(!pdfLibrary){const lib=await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.min.mjs');lib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.min.mjs';pdfLibrary=lib;}return pdfLibrary;}
+function getMammoth(){if(!mammothPromise)mammothPromise=new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='https://cdn.jsdelivr.net/npm/mammoth@1.9.0/mammoth.browser.min.js';script.onload=()=>resolve(window.mammoth);script.onerror=()=>{mammothPromise=null;reject(new Error('Could not load the Word reader. Check your internet connection.'));};document.head.append(script);});return mammothPromise;}
+async function readPdf(file){const lib=await getPdfLibrary(),task=lib.getDocument({data:new Uint8Array(await file.arrayBuffer()),isEvalSupported:false});task.onPassword=(update,reason)=>{const password=window.prompt(reason===2?'Incorrect password. Enter the PDF password:':'This PDF needs a password:');if(password===null){task.destroy();return;}update(password);};const pdf=await task.promise;try{let pages=[],pageStarts=[],empty=0,totalLength=0;for(let n=1;n<=pdf.numPages;n++){status(`Opening PDF page ${n} of ${pdf.numPages}…`);const page=await pdf.getPage(n),content=await page.getTextContent();let value='';for(const item of content.items){if(typeof item.str==='string')value+=item.str+(item.hasEOL?'\n':' ');}if(!value.trim())empty++;const pageText=value.trim();pageStarts.push(totalLength);pages.push(pageText);totalLength+=pageText.length+2;page.cleanup();}return {text:pages.join('\n\n'),pageStarts,warning:empty?`${empty} page(s) had no extractable text. Scans and images were not read.`:''};}finally{await pdf.destroy();}}
+$('file').onchange=async()=>{const file=$('file').files[0];if(!file)return;stopReading('');if(file.size>50*1024*1024){status('Please choose a file under 50 MB.');return;}loading=true;$('file').disabled=true;$('editText').disabled=true;setEditing(false);$('text').setAttribute('aria-busy','true');buttons();status(`Opening ${file.name}…`);try{const extension=file.name.split('.').pop().toLowerCase();let result;if(extension==='pdf')result=await readPdf(file);else if(extension==='docx'){const mammoth=await getMammoth();result={text:(await mammoth.extractRawText({arrayBuffer:await file.arrayBuffer()})).value};}else if(['txt','md','csv','html','htm'].includes(extension)){let text=await file.text();if(['html','htm'].includes(extension)){const doc=new DOMParser().parseFromString(text,'text/html');doc.querySelectorAll('script,style,noscript').forEach(n=>n.remove());doc.querySelectorAll('p,div,br,li,h1,h2,h3,tr').forEach(n=>n.append('\n'));text=doc.body.textContent;}result={text};}else throw new Error('Unsupported file. Choose PDF, .docx, TXT, Markdown, CSV, or HTML, or paste its text.');if(!result.text.trim())throw new Error('No readable text was found. If this is a scanned document, use text recognition (OCR) first.');currentBookId=null;currentOffset=0;bookmarkOffset=null;currentPageStarts=result.pageStarts||[];updateBookmarkLabel();$('bookTitle').value=file.name;$('text').value=result.text;$('text').textContent=result.text;updateProgress(0);refreshSearch();status(`${file.name} is ready. ${result.warning||'Choose a voice and press Read aloud.'}`);if($('autoSave').checked){await savePublication(file.name,result.text,file);}}catch(error){status(`Could not open this file. ${error.message||'Check the format and internet connection, then try again.'} Your previous text is unchanged.`);}finally{loading=false;$('file').disabled=false;$('editText').disabled=false;$('text').setAttribute('aria-busy','false');$('file').value='';buttons();}};
+// IndexedDB holds readable text and original files without uploading them.
+let libraryDbPromise=null,libraryEntries=[];
+function libraryStatus(message){$('libraryStatus').textContent=message;}
+function libraryError(error){libraryStatus(error?.name==='QuotaExceededError'?'Your device storage is full. Download copies and remove some saved publications, then try again.':'Could not access your saved library. Browser storage may be unavailable. Your current text is still ready to read.');}
+function openLibraryDb(){
+ if(!libraryDbPromise)libraryDbPromise=new Promise((resolve,reject)=>{
+  if(!window.indexedDB){reject(new Error('Storage unavailable'));return;}
+  const request=indexedDB.open('voice-reader-library',1);
+  request.onupgradeneeded=()=>request.result.createObjectStore('publications',{keyPath:'id'});
+  request.onsuccess=()=>{const db=request.result;db.onversionchange=()=>{db.close();libraryDbPromise=null;};resolve(db);};
+  request.onerror=()=>reject(request.error);
+  request.onblocked=()=>libraryStatus('Close other Voice Reader tabs, then reopen this page to use your library.');
+ }).catch(error=>{libraryDbPromise=null;throw error;});
+ return libraryDbPromise;
+}
+async function libraryOperation(mode,operation){const db=await openLibraryDb();return new Promise((resolve,reject)=>{const tx=db.transaction('publications',mode);let result;const request=operation(tx.objectStore('publications'));request.onsuccess=()=>{result=request.result;};tx.oncomplete=()=>resolve(result);tx.onabort=()=>reject(tx.error||request.error||new Error('Save cancelled'));tx.onerror=()=>{};});}
+function renderLibrary(){
+ const query=$('librarySearch').value.trim().toLocaleLowerCase();const visible=libraryEntries.filter(book=>book.title.toLocaleLowerCase().includes(query));const list=$('libraryList');list.replaceChildren();
+ for(const book of visible){const li=document.createElement('li');li.className='library-item';const title=document.createElement('strong');title.textContent=book.title;const meta=document.createElement('p');meta.className='library-meta';meta.textContent=`${new Date(book.updatedAt).toLocaleDateString()} · ${book.text.length.toLocaleString()} characters${book.bookmark?' · Bookmark: '+positionLabel(book.bookmark.offset,book.text,book.pageStarts||[]):''}`;const actions=document.createElement('div');actions.className='controls';
+  for(const [label,handler] of [['Open',()=>openPublication(book.id)],['Download',()=>downloadPublication(book.id)],['Remove',()=>removePublication(book.id)]]){const button=document.createElement('button');button.type='button';button.className='secondary';button.textContent=label;button.onclick=handler;actions.append(button);}li.append(title,meta,actions);list.append(li);
+ }
+ if(!visible.length){const empty=document.createElement('li');empty.className='note';empty.textContent=query?'No matching publications.':'No saved publications yet. Open a document or save pasted text to begin.';list.append(empty);}
+}
+async function refreshLibrary(){const books=await libraryOperation('readonly',store=>store.getAll());libraryEntries=books.map(({original,...book})=>book).sort((a,b)=>b.updatedAt-a.updatedAt);renderLibrary();return books.length;}
+async function savePublication(title,text,original=null){
+ try{if(!text.trim()){libraryStatus('Paste text or open a document before saving.');return;}const previous=currentBookId?await libraryOperation('readonly',store=>store.get(currentBookId)):null;const id=previous?.id||('book-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2));
+  // Edited text is downloaded as TXT; keep an original only when it still matches.
+  const retainedOriginal=original||(previous?.text===text?previous.original:null);
+  const book={id,title:title.trim()||'Untitled publication',text,updatedAt:Date.now(),original:retainedOriginal,pageStarts:currentPageStarts,bookmark:previous?.text===text?previous.bookmark:null};await libraryOperation('readwrite',store=>store.put(book));currentBookId=id;bookmarkOffset=book.bookmark?.offset??null;updateBookmarkLabel();$('bookTitle').value=book.title;const count=await refreshLibrary();libraryStatus(`Saved “${book.title}”. ${count} publication${count===1?'':'s'} in your library.`);
+  if(navigator.storage?.persist)navigator.storage.persist().catch(()=>{});
+ }catch(error){libraryError(error);}
+}
+async function openPublication(id){if(loading){libraryStatus('Wait for the current document to finish opening.');return;}try{const book=await libraryOperation('readonly',store=>store.get(id));if(!book){await refreshLibrary();libraryStatus('This publication is no longer saved.');return;}stopReading('');setEditing(false);currentBookId=id;currentPageStarts=book.pageStarts||[];bookmarkOffset=book.bookmark?.offset??null;currentOffset=bookmarkOffset??0;$('bookTitle').value=book.title;$('text').value=book.text;$('text').textContent=book.text;updateProgress(0);refreshSearch();updateBookmarkLabel();if(bookmarkOffset!==null){showHighlight(bookmarkOffset,1);updateProgress(bookmarkOffset/Math.max(1,book.text.length)*100);status(`“${book.title}” is ready. Press Read from bookmark to continue.`);}else status(`“${book.title}” is ready. Press Read aloud.`);$('text').focus();}catch(error){libraryError(error);}}
+async function downloadPublication(id){try{const book=await libraryOperation('readonly',store=>store.get(id));if(!book){libraryStatus('This publication is no longer saved.');return;}const blob=book.original||new Blob([book.text],{type:'text/plain;charset=utf-8'});const link=document.createElement('a');const url=URL.createObjectURL(blob);link.href=url;link.download=book.original?.name||(book.title.replace(/[\/:*?"<>|]/g,'_')+'.txt');document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}catch(error){libraryError(error);}}
+async function removePublication(id){try{const book=libraryEntries.find(book=>book.id===id);if(!book||!window.confirm(`Remove “${book.title}” from this device’s library?`))return;await libraryOperation('readwrite',store=>store.delete(id));if(currentBookId===id){currentBookId=null;bookmarkOffset=null;updateBookmarkLabel();}await refreshLibrary();libraryStatus('Publication removed.');}catch(error){libraryError(error);}}
 
-.file-upload-wrapper { margin-bottom: 1.5rem; text-align: left; }
+function positionLabel(offset,text=$('text').value,pageStarts=currentPageStarts){if(pageStarts.length){let page=1;for(let i=0;i<pageStarts.length;i++){if(pageStarts[i]<=offset)page=i+1;else break;}return `page ${page} of ${pageStarts.length}`;}return `${Math.round(offset/Math.max(1,text.length)*100)}% through the text`;}
+function updateBookmarkLabel(){ $('continueBookmark').disabled=bookmarkOffset===null||loading;$('bookmarkStatus').textContent=bookmarkOffset===null?'No bookmark yet. Bookmark while listening, or tap a word first. Pause and Stop save your place in a saved publication.':`Saved bookmark: ${positionLabel(bookmarkOffset)}. Press Read from bookmark to continue.`;}
+async function saveBookmarkAt(offset){
+ const text=$('text').value;if(!text.trim()){ $('bookmarkStatus').textContent='Open a publication or paste text before bookmarking.';return;}
+ offset=Math.max(0,Math.min(offset,text.length));
+ try{
+  if(!currentBookId){await savePublication($('bookTitle').value,text);if(!currentBookId){$('bookmarkStatus').textContent='Could not save the bookmark. Please try saving the publication first.';return;}}
+  const id=currentBookId;const db=await openLibraryDb();await new Promise((resolve,reject)=>{const tx=db.transaction('publications','readwrite'),store=tx.objectStore('publications'),request=store.get(id);let missing=false;request.onsuccess=()=>{const book=request.result;if(!book){missing=true;return;}book.bookmark={offset,savedAt:Date.now()};if(book.text!==text){book.text=text;book.original=null;book.pageStarts=currentPageStarts;}store.put(book);};tx.oncomplete=()=>missing?reject(new Error('Publication unavailable')):resolve();tx.onabort=()=>reject(tx.error||request.error);});
+  if(currentBookId===id&&$('text').value===text){bookmarkOffset=offset;updateBookmarkLabel();}await refreshLibrary();
+ }catch(error){$('bookmarkStatus').textContent='Could not save this bookmark. Your current text is still available.';libraryError(error);}
+}
+$('saveBookmark').onclick=async()=>{const button=$('saveBookmark');button.disabled=true;try{await saveBookmarkAt(editing?selectionOffset():currentOffset);}finally{button.disabled=false;}};
+$('continueBookmark').onclick=()=>{if(bookmarkOffset!==null)startReading(bookmarkOffset);};
+try{$('followAlong').checked=localStorage.getItem('voice-reader-follow-along')!=='false';}catch{}
+$('followAlong').onchange=()=>{try{localStorage.setItem('voice-reader-follow-along',String($('followAlong').checked));}catch{}if(editing)return;if($('followAlong').checked){showHighlight(currentOffset,1);}else $('text').textContent=$('text').value;};
 
-.file-upload-wrapper label { display: block; margin-bottom: 0.5rem; color: white; font-size: 0.9rem; }
-
-.file-upload-wrapper input[type="file"] { width: 100%; padding: 10px; border-radius: var(--border-radius); border: 1px dashed white; color: white; box-sizing: border-box; cursor: pointer; }
-
-.file-upload-wrapper input[type="file"]::file-selector-button { border-radius: var(--button-radius); padding: 8px 16px; border: none; background-color: white; color: var(--text-color); cursor: pointer; font-weight: 600; margin-right: 15px; }
-
-.select-wrapper { margin-bottom: 1.5rem; text-align: left; }
-
-.select-wrapper label { display: block; margin-bottom: 0.5rem; color: white; font-size: 0.9rem; }
-
-select { width: 100%; padding: 12px; border-radius: var(--border-radius); border: none; background-color: rgba(255, 255, 255, 0.9); font-family: var(--font-family); font-size: 16px; outline: none; cursor: pointer; }
-
-.settings-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: white; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 0.5rem; }
-
-.settings-content { display: none; margin-bottom: 1.5rem; text-align: left; background-color: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: var(--border-radius); }
-
-.settings-content.active { display: block; }
-
-.control-group { margin-bottom: 1rem; }
-
-.control-group:last-child { margin-bottom: 0; }
-
-.control-group label { display: block; margin-bottom: 0.5rem; color: white; font-size: 0.9rem; }
-
-.control-group span { color: white; font-weight: 600; }
-
-input[type="range"] { width: 100%; -webkit-appearance: none; background: transparent; margin-bottom: 0.5rem; }
-
-input[type="range"]::-webkit-slider-runnable-track { height: 8px; border-radius: 5px; background: rgba(255, 255, 255, 0.3); }
-
-input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%; background: white; margin-top: -5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; }
-
-button.action-btn { background-color: white; color: var(--text-color); padding: 14px 28px; border-radius: var(--button-radius); border: none; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 100%; box-sizing: border-box; }
-
-button.action-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); } </style> </head> <body>
-
-<div class="container"> <h1>Voice App</h1>
-
-<div class="file-upload-wrapper"> <label for="fileInput">Upload File (.txt, .md)</label> <input type="file" id="fileInput" accept=".txt,.md"> </div>
-
-<textarea id="textInput" placeholder="Type or paste text here to be read aloud..."></textarea>
-
-<div class="select-wrapper"> <label for="voiceSelect">Select Voice</label> <select id="voiceSelect"></select> </div>
-
-<div> <div class="settings-header" onclick="toggleSettings()"> <span>Advanced Settings</span> <span id="chevron">▼</span> </div> <div id="settingsContent" class="settings-content"> <div class="control-group"> <label for="rate">Speed (Rate): <span id="rateVal">1</span></label> <input type="range" id="rate" min="0.5" max="2" value="1" step="0.1"> </div> <div class="control-group"> <label for="pitch">Pitch (Tone): <span id="pitchVal">1</span></label> <input type="range" id="pitch" min="0" max="2" value="1" step="0.1"> </div> </div> </div>
-
-<button class="action-btn" onclick="speak()">Read Aloud</button> </div>
-
-<script> let voices = []; const synth = window.speechSynthesis; const textInput = document.getElementById('textInput'); const voiceSelect = document.getElementById('voiceSelect'); const fileInput = document.getElementById('fileInput');
-
-const rate = document.getElementById('rate'); const pitch = document.getElementById('pitch'); const rateVal = document.getElementById('rateVal'); const pitchVal = document.getElementById('pitchVal');
-
-rate.addEventListener('input', () => rateVal.textContent = rate.value); pitch.addEventListener('input', () => pitchVal.textContent = pitch.value);
-
-function toggleSettings() { const content = document.getElementById('settingsContent'); const chevron = document.getElementById('chevron'); content.classList.toggle('active'); chevron.textContent = content.classList.contains('active') ? '▲' : '▼'; }
-
-fileInput.addEventListener('change', function(e) { const file = e.target.files[0]; if (!file) return;
-
-const reader = new FileReader();
-
-reader.onload = function(e) { textInput.value = e.target.result; };
-
-reader.readAsText(file); });
-
-function populateVoiceList() { voices = synth.getVoices(); voiceSelect.innerHTML = '';
-
-voices.forEach(voice => { const option = document.createElement('option'); option.textContent = ${voice.name} (${voice.lang});
-
-if(voice.default) { option.textContent += ' — DEFAULT'; }
-
-option.setAttribute('data-lang', voice.lang); option.setAttribute('data-name', voice.name); voiceSelect.appendChild(option); }); }
-
-populateVoiceList(); if (speechSynthesis.onvoiceschanged !== undefined) { speechSynthesis.onvoiceschanged = populateVoiceList; }
-
-function speak() { if (synth.speaking) { console.error('synth.speaking'); return; }
-
-const text = textInput.value;
-
-if (text !== '') { const utterThis = new SpeechSynthesisUtterance(text);
-
-const selectedVoiceName = voiceSelect.selectedOptions[0].getAttribute('data-name'); const selectedVoice = voices.find(v => v.name === selectedVoiceName);
-
-utterThis.voice = selectedVoice; utterThis.rate = rate.value; utterThis.pitch = pitch.value;
-
-synth.speak(utterThis); } } </script> </body> </html>
+$('saveBook').onclick=async()=>{if(editing)readerText=$('text').innerText.replace(/\r\n/g,'\n');const button=$('saveBook');button.disabled=true;try{await savePublication($('bookTitle').value,$('text').value);}finally{button.disabled=false;}};
+$('librarySearch').oninput=renderLibrary;
+try{$('autoSave').checked=localStorage.getItem('voice-reader-auto-save')!=='false';}catch{}
+$('autoSave').onchange=()=>{try{localStorage.setItem('voice-reader-auto-save',String($('autoSave').checked));}catch{}};
+refreshLibrary().then(count=>libraryStatus(`${count} saved publication${count===1?'':'s'}.`)).catch(libraryError);
+window.addEventListener('beforeunload' ,()=>{if(synth)synth.cancel();});populateVoices();if(synth)synth.addEventListener('voiceschanged',populateVoices);else status('Reading aloud is unavailable in this browser. Try Chrome or Edge.');buttons();
+</script></body></html>
