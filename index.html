@@ -1,69 +1,97 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voice App with Voice Selection</title>
-    <style>
-        body { font-family: sans-serif; padding: 20px; line-height: 1.6; max-width: 600px; margin: auto; }
-        textarea { width: 100%; height: 150px; margin-bottom: 10px; padding: 10px; }
-        select, input { width: 100%; margin-bottom: 10px; }
-        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
-    </style>
-</head>
-<body>
-    <h1>Voice App</h1>
-    <textarea id="textInput" placeholder="Type or paste text here to be read aloud..."></textarea>
-    <br>
-    <label for="voiceSelect">Select Voice:</label>
-    <select id="voiceSelect"></select>
-    <br>
-    <label for="rate">Speed (Rate): <span id="rateVal">1</span></label>
-    <input type="range" id="rate" min="0.5" max="2" value="1" step="0.1">
-    <br>
-    <label for="pitch">Pitch (Tone): <span id="pitchVal">1</span></label>
-    <input type="range" id="pitch" min="0" max="2" value="1" step="0.1">
-    <br>
-    <button onclick="speakText()">Read Aloud</button>
+<!DOCTYPE html><!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Modern Voice App</title> <style> :root { --bg-color: #f0f2f5; --card-bg: #c5a47e; --text-color: #333; --accent-color: #007bff; --button-radius: 25px; --border-radius: 12px; --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
-    <script>
-        let voices = [];
-        const voiceSelect = document.getElementById('voiceSelect');
-        const rateInput = document.getElementById('rate');
-        const pitchInput = document.getElementById('pitch');
-        const rateVal = document.getElementById('rateVal');
-        const pitchVal = document.getElementById('pitchVal');
+body { font-family: var(--font-family); background-color: var(--bg-color); color: var(--text-color); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
 
-        function populateVoiceList() {
-            voices = window.speechSynthesis.getVoices();
-            voiceSelect.innerHTML = '';
-            voices.forEach((voice) => {
-                const option = document.createElement('option');
-                option.textContent = `${voice.name} (${voice.lang})`;
-                if (voice.default) option.textContent += ' — DEFAULT';
-                option.setAttribute('data-name', voice.name);
-                voiceSelect.appendChild(option);
-            });
-        }
+.container { background-color: var(--card-bg); padding: 2.5rem; border-radius: var(--border-radius); box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 550px; text-align: center; }
 
-        window.speechSynthesis.onvoiceschanged = populateVoiceList;
-        populateVoiceList();
+h1 { color: white; margin-bottom: 2rem; font-weight: 300; }
 
-        rateInput.oninput = () => rateVal.textContent = rateInput.value;
-        pitchInput.oninput = () => pitchVal.textContent = pitchInput.value;
+textarea { width: 100%; height: 180px; padding: 15px; border-radius: var(--border-radius); border: none; resize: none; box-sizing: border-box; font-family: var(--font-family); font-size: 16px; margin-bottom: 1.5rem; background-color: rgba(255, 255, 255, 0.9); outline: none; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); }
 
-        function speakText() {
-            const text = document.getElementById('textInput').value;
-            if (text !== '') {
-                const utterance = new SpeechSynthesisUtterance(text);
-                const selectedVoiceName = voiceSelect.selectedOptions[0].getAttribute('data-name');
-                utterance.voice = voices.find(voice => voice.name === selectedVoiceName);
-                utterance.rate = rateInput.value;
-                utterance.pitch = pitchInput.value;
-                window.speechSynthesis.speak(utterance);
-            }
-        }
-    </script>
-</body>
-</html>
+.file-upload-wrapper { margin-bottom: 1.5rem; text-align: left; }
 
+.file-upload-wrapper label { display: block; margin-bottom: 0.5rem; color: white; font-size: 0.9rem; }
+
+.file-upload-wrapper input[type="file"] { width: 100%; padding: 10px; border-radius: var(--border-radius); border: 1px dashed white; color: white; box-sizing: border-box; cursor: pointer; }
+
+.file-upload-wrapper input[type="file"]::file-selector-button { border-radius: var(--button-radius); padding: 8px 16px; border: none; background-color: white; color: var(--text-color); cursor: pointer; font-weight: 600; margin-right: 15px; }
+
+.select-wrapper { margin-bottom: 1.5rem; text-align: left; }
+
+.select-wrapper label { display: block; margin-bottom: 0.5rem; color: white; font-size: 0.9rem; }
+
+select { width: 100%; padding: 12px; border-radius: var(--border-radius); border: none; background-color: rgba(255, 255, 255, 0.9); font-family: var(--font-family); font-size: 16px; outline: none; cursor: pointer; }
+
+.settings-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: white; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 0.5rem; }
+
+.settings-content { display: none; margin-bottom: 1.5rem; text-align: left; background-color: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: var(--border-radius); }
+
+.settings-content.active { display: block; }
+
+.control-group { margin-bottom: 1rem; }
+
+.control-group:last-child { margin-bottom: 0; }
+
+.control-group label { display: block; margin-bottom: 0.5rem; color: white; font-size: 0.9rem; }
+
+.control-group span { color: white; font-weight: 600; }
+
+input[type="range"] { width: 100%; -webkit-appearance: none; background: transparent; margin-bottom: 0.5rem; }
+
+input[type="range"]::-webkit-slider-runnable-track { height: 8px; border-radius: 5px; background: rgba(255, 255, 255, 0.3); }
+
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%; background: white; margin-top: -5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; }
+
+button.action-btn { background-color: white; color: var(--text-color); padding: 14px 28px; border-radius: var(--button-radius); border: none; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 100%; box-sizing: border-box; }
+
+button.action-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); } </style> </head> <body>
+
+<div class="container"> <h1>Voice App</h1>
+
+<div class="file-upload-wrapper"> <label for="fileInput">Upload File (.txt, .md)</label> <input type="file" id="fileInput" accept=".txt,.md"> </div>
+
+<textarea id="textInput" placeholder="Type or paste text here to be read aloud..."></textarea>
+
+<div class="select-wrapper"> <label for="voiceSelect">Select Voice</label> <select id="voiceSelect"></select> </div>
+
+<div> <div class="settings-header" onclick="toggleSettings()"> <span>Advanced Settings</span> <span id="chevron">▼</span> </div> <div id="settingsContent" class="settings-content"> <div class="control-group"> <label for="rate">Speed (Rate): <span id="rateVal">1</span></label> <input type="range" id="rate" min="0.5" max="2" value="1" step="0.1"> </div> <div class="control-group"> <label for="pitch">Pitch (Tone): <span id="pitchVal">1</span></label> <input type="range" id="pitch" min="0" max="2" value="1" step="0.1"> </div> </div> </div>
+
+<button class="action-btn" onclick="speak()">Read Aloud</button> </div>
+
+<script> let voices = []; const synth = window.speechSynthesis; const textInput = document.getElementById('textInput'); const voiceSelect = document.getElementById('voiceSelect'); const fileInput = document.getElementById('fileInput');
+
+const rate = document.getElementById('rate'); const pitch = document.getElementById('pitch'); const rateVal = document.getElementById('rateVal'); const pitchVal = document.getElementById('pitchVal');
+
+rate.addEventListener('input', () => rateVal.textContent = rate.value); pitch.addEventListener('input', () => pitchVal.textContent = pitch.value);
+
+function toggleSettings() { const content = document.getElementById('settingsContent'); const chevron = document.getElementById('chevron'); content.classList.toggle('active'); chevron.textContent = content.classList.contains('active') ? '▲' : '▼'; }
+
+fileInput.addEventListener('change', function(e) { const file = e.target.files[0]; if (!file) return;
+
+const reader = new FileReader();
+
+reader.onload = function(e) { textInput.value = e.target.result; };
+
+reader.readAsText(file); });
+
+function populateVoiceList() { voices = synth.getVoices(); voiceSelect.innerHTML = '';
+
+voices.forEach(voice => { const option = document.createElement('option'); option.textContent = ${voice.name} (${voice.lang});
+
+if(voice.default) { option.textContent += ' — DEFAULT'; }
+
+option.setAttribute('data-lang', voice.lang); option.setAttribute('data-name', voice.name); voiceSelect.appendChild(option); }); }
+
+populateVoiceList(); if (speechSynthesis.onvoiceschanged !== undefined) { speechSynthesis.onvoiceschanged = populateVoiceList; }
+
+function speak() { if (synth.speaking) { console.error('synth.speaking'); return; }
+
+const text = textInput.value;
+
+if (text !== '') { const utterThis = new SpeechSynthesisUtterance(text);
+
+const selectedVoiceName = voiceSelect.selectedOptions[0].getAttribute('data-name'); const selectedVoice = voices.find(v => v.name === selectedVoiceName);
+
+utterThis.voice = selectedVoice; utterThis.rate = rate.value; utterThis.pitch = pitch.value;
+
+synth.speak(utterThis); } } </script> </body> </html>
