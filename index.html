@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice App with Voice Selection</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; line-height: 1.6; max-width: 600px; margin: auto; }
+        textarea { width: 100%; height: 150px; margin-bottom: 10px; padding: 10px; }
+        select, input { width: 100%; margin-bottom: 10px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Voice App</h1>
+    <textarea id="textInput" placeholder="Type or paste text here to be read aloud..."></textarea>
+    <br>
+    <label for="voiceSelect">Select Voice:</label>
+    <select id="voiceSelect"></select>
+    <br>
+    <label for="rate">Speed (Rate): <span id="rateVal">1</span></label>
+    <input type="range" id="rate" min="0.5" max="2" value="1" step="0.1">
+    <br>
+    <label for="pitch">Pitch (Tone): <span id="pitchVal">1</span></label>
+    <input type="range" id="pitch" min="0" max="2" value="1" step="0.1">
+    <br>
+    <button onclick="speakText()">Read Aloud</button>
+
+    <script>
+        let voices = [];
+        const voiceSelect = document.getElementById('voiceSelect');
+        const rateInput = document.getElementById('rate');
+        const pitchInput = document.getElementById('pitch');
+        const rateVal = document.getElementById('rateVal');
+        const pitchVal = document.getElementById('pitchVal');
+
+        function populateVoiceList() {
+            voices = window.speechSynthesis.getVoices();
+            voiceSelect.innerHTML = '';
+            voices.forEach((voice) => {
+                const option = document.createElement('option');
+                option.textContent = `${voice.name} (${voice.lang})`;
+                if (voice.default) option.textContent += ' — DEFAULT';
+                option.setAttribute('data-name', voice.name);
+                voiceSelect.appendChild(option);
+            });
+        }
+
+        window.speechSynthesis.onvoiceschanged = populateVoiceList;
+        populateVoiceList();
+
+        rateInput.oninput = () => rateVal.textContent = rateInput.value;
+        pitchInput.oninput = () => pitchVal.textContent = pitchInput.value;
+
+        function speakText() {
+            const text = document.getElementById('textInput').value;
+            if (text !== '') {
+                const utterance = new SpeechSynthesisUtterance(text);
+                const selectedVoiceName = voiceSelect.selectedOptions[0].getAttribute('data-name');
+                utterance.voice = voices.find(voice => voice.name === selectedVoiceName);
+                utterance.rate = rateInput.value;
+                utterance.pitch = pitchInput.value;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+    </script>
+</body>
+</html>
+
