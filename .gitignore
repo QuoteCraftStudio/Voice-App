@@ -426,3 +426,54 @@ FodyWeavers.xsd
 
 # Official VS Code C# Dev Kit Extension exclusion
 #*.lscache
+
+# QuoteCraft: website APK downloads and signing material stay outside GitHub.
+# Ignore patterns do not remove files already tracked. Run the source-only check.
+# Case-insensitive matching; guard also rejects renamed binaries and Git LFS pointers.
+*.[aA][pP][kK]
+*.[aA][aA][bB]
+*.[aA][pP][kK][sS]
+*.[xX][aA][pP][kK]
+*.[zZ][iI][pP]
+*.[7][zZ]
+*.[rR][aA][rR]
+*.[tT][aA][rR]
+*.[gG][zZ]
+*.[tT][gG][zZ]
+*.[bB][zZ]2
+*.[xX][zZ]
+*.[eE][xX][eE]
+*.[mM][sS][iI]
+*.[dD][lL][lL]
+*.[sS][oO]
+*.[dD][yY][lL][iI][bB]
+*.[jJ][kK][sS]
+*.[kK][eE][yY][sS][tT][oO][rR][eE]
+*.[pP]12
+*.[pP][fF][xX]
+.[eE][nN][vV]
+.[eE][nN][vV].*
+*.[eE][nN][vV]
+*.[bB][aA][kK]
+*.[bB][aA][cC][kK][uU][pP]
+*.[oO][lL][dD]
+*.[oO][rR][iI][gG]
+*.[rR][eE][jJ]
+*.[tT][mM][pP]
+*.[tT][eE][mM][pP]
+*.[sS][aA][vV][eE]
+*.[sS][wW][pP]
+*.[sS][wW][oO]
+*.[bB][zZ]
+*.[lL][zZ]
+*.[lL][zZ][mM][aA]
+*.[zZ][sS][tT]
+*.[zZ]
+*.[cC][aA][bB]
+*.[iI][sS][oO]
+*.[iI][mM][gG]
+*.[dD][mM][gG]
+*.[dD][eE][bB]
+*.[rR][pP][mM]
+*~
+\#*\#

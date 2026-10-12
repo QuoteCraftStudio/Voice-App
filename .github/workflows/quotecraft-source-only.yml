@@ -1,0 +1,24 @@
+name: QuoteCraft source only
+
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-only:
+    # Standard runners are free for public repositories. Do not run this job
+    # on a private repository without a separate cost review.
+    if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Reject APKs, executable packages, archives and signing stores
+        run: python3 .github/quotecraft/check_source_only.py .
