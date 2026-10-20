@@ -1,0 +1,19 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'ca.quotecraftstudio.voicereader'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'ca.quotecraftstudio.voicereader'
+        minSdk 26
+        targetSdk 35
+        versionCode 20261020
+        versionName '2026.10.20.1'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
