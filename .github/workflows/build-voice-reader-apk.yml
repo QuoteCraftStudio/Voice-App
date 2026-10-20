@@ -18,7 +18,13 @@ jobs:
         with:
           gradle-version: '8.7'
       - name: Install Android SDK 35
-        run: sdkmanager --install 'platforms;android-35' 'build-tools;35.0.0'
+        shell: bash
+        run: |
+          SDKROOT="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          SDKMANAGER="$(find "$SDKROOT" -name sdkmanager -type f | head -n 1)"
+          test -n "$SDKMANAGER" || { echo "SDK manager not installed"; exit 1; }
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" --install 'platforms;android-35' 'build-tools;35.0.0'
       - name: Build debug APK
         run: gradle -p android --no-daemon --stacktrace assembleDebug
       - name: Upload debug APK
