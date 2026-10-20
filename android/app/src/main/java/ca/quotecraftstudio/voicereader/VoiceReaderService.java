@@ -10,7 +10,7 @@ import android.content.SharedPreferences;
 import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
-import android.media.session.MediaMetadata;
+import android.media.MediaMetadata;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
 import android.os.Bundle;
@@ -202,7 +202,7 @@ public final class VoiceReaderService extends Service {
         if(allText.isEmpty()){finish();return;}
         requestAudioFocus();
         if(!chunk.isEmpty()){
-            if(chunkResumeAt>=chunk.length){currentOffset=chunkEnd;chunk="";chunkResumeAt=0;}
+            if(chunkResumeAt>=chunk.length()){currentOffset=chunkEnd;chunk="";chunkResumeAt=0;}
             else{speakCurrent();return;}
         }
         while(cursor<allText.length()){
